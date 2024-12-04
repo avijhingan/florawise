@@ -9,15 +9,18 @@ const MatchingExercise = ({ pairs, lessonId, unitId }) => {
   const [showFeedback, setShowFeedback] = useState(false);
   const { actions } = useProgress();
 
-  // Check if all pairs are matched
+  const handleCompletion = () => {
+    actions.addXP(20);
+    actions.completeLesson(lessonId, unitId);
+  };
+
   useEffect(() => {
     if (matches.length === pairs.length) {
-      // Add slight delay before completing lesson
       setTimeout(() => {
-        actions.completeLesson(lessonId, unitId);
+        handleCompletion();
       }, 1000);
     }
-  }, [matches, pairs.length, lessonId, unitId, actions]);
+  }, [matches, pairs.length, lessonId, unitId]);
 
   const handleClick = (side, index) => {
     if (side === 'left') {
@@ -52,7 +55,6 @@ const MatchingExercise = ({ pairs, lessonId, unitId }) => {
       )}
 
       <div className="flex gap-8">
-        {/* Left Column */}
         <div className="flex-1 space-y-2">
           {pairs.map((pair, index) => (
             <div
@@ -76,7 +78,6 @@ const MatchingExercise = ({ pairs, lessonId, unitId }) => {
           ))}
         </div>
 
-        {/* Right Column */}
         <div className="flex-1 space-y-2">
           {pairs.map((pair, index) => (
             <div

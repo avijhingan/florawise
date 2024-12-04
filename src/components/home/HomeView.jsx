@@ -3,15 +3,14 @@ import CurrentLessonCard from './CurrentLessonCard';
 import Stats from './Stats';
 import DailyQuests from './DailyQuests';
 
-const HomeView = () => {
-  const handleContinueLearning = () => {
-    // We'll implement this navigation later
-    console.log('Continue learning clicked');
+const HomeView = ({ onContinueLearning }) => {
+  const handleContinue = (lesson) => {
+    onContinueLearning(lesson);
   };
 
   return (
     <div className="p-6 space-y-6 pb-24">
-      <CurrentLessonCard onContinue={handleContinueLearning} />
+      <CurrentLessonCard onContinue={handleContinue} />
       <Stats />
       <DailyQuests />
     </div>

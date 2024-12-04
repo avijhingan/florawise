@@ -3,7 +3,6 @@ import { BOTANY_TRACK, GARDEN_TRACK, WILD_PLANTS_TRACK, TREES_TRACK } from '@/da
 
 const ProgressContext = createContext();
 
-// Helper to find a lesson by ID across all tracks
 const findLessonById = (lessonId) => {
   const tracks = [BOTANY_TRACK, GARDEN_TRACK, WILD_PLANTS_TRACK, TREES_TRACK];
   for (const track of tracks) {
@@ -21,7 +20,6 @@ const findLessonById = (lessonId) => {
   return null;
 };
 
-// Helper to get next lesson
 const getNextLesson = (currentLessonId) => {
   const tracks = [BOTANY_TRACK, GARDEN_TRACK, WILD_PLANTS_TRACK, TREES_TRACK];
   let foundCurrent = false;
@@ -73,12 +71,13 @@ export function ProgressProvider({ children }) {
     };
   });
 
-  // Save progress to localStorage whenever it changes
+  const [showXPGain, setShowXPGain] = useState(false);
+  const [xpGainAmount, setXPGainAmount] = useState(0);
+
   useEffect(() => {
     localStorage.setItem('florawise-progress', JSON.stringify(progress));
   }, [progress]);
 
-  // Check and update streak
   useEffect(() => {
     const lastActive = new Date(progress.lastActive);
     const today = new Date();
@@ -103,7 +102,20 @@ export function ProgressProvider({ children }) {
   const value = {
     progress,
     setProgress,
+    showXPGain,
+    xpGainAmount,
     actions: {
+      hideXPGain: () => {
+        setShowXPGain(false);
+      },
+      addXP: (amount) => {
+        setXPGainAmount(amount);
+        setShowXPGain(true);
+        setProgress(prev => ({
+          ...prev,
+          xp: prev.xp + amount
+        }));
+      },
       completeLesson: (lessonId, unitId) => {
         setProgress(prev => {
           const nextLesson = getNextLesson(lessonId);
@@ -125,6 +137,10 @@ export function ProgressProvider({ children }) {
             }
           };
         });
+        
+        // Trigger XP gain animation
+        setXPGainAmount(20);
+        setShowXPGain(true);
       },
 
       setCurrentLesson: (lesson) => {
