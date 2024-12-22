@@ -1,30 +1,36 @@
 import React from 'react';
+import { Flame } from 'lucide-react';
+import { useProgress } from '@/context/ProgressContext';
+import { showToast } from '@/utils/toast';
 
-const Stats = () => (
-  <div className="grid grid-cols-2 gap-4">
-    <div className="bg-amber-50 rounded-xl p-6">
-      <div className="flex items-center gap-3">
-        <div className="bg-amber-100 p-2 rounded-full">
-          <div className="w-5 h-5 text-amber-600">🏆</div>
+const Stats = () => {
+  const { progress } = useProgress();
+
+  const handleStreakClick = () => {
+    showToast.unimplemented();
+  };
+
+  return (
+    <div className="grid grid-cols-1 gap-4">
+      <div 
+        onClick={handleStreakClick}
+        className="bg-white rounded-xl p-6 shadow-sm cursor-pointer"
+      >
+        <div className="flex items-center gap-2 mb-2">
+          <div className="bg-orange-50 p-2 rounded-full">
+            <Flame className="w-4 h-4 text-orange-500" />
+          </div>
+          <h2 className="font-semibold">7 Day Streak</h2>
         </div>
-        <div>
-          <h3 className="text-lg font-semibold">7 Day Streak!</h3>
-          <p className="text-sm text-amber-700">Keep it growing! 🌱</p>
+        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-orange-500 transition-all"
+            style={{ width: '70%' }}
+          />
         </div>
       </div>
     </div>
-    <div className="bg-emerald-50 rounded-xl p-6">
-      <div className="flex items-center gap-3">
-        <div className="bg-emerald-100 p-2 rounded-full">
-          <div className="w-5 h-5 text-emerald-600">🌿</div>
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold">15 Plants</h3>
-          <p className="text-sm text-emerald-700">Identified! 🔍</p>
-        </div>
-      </div>
-    </div>
-  </div>
-);
+  );
+};
 
 export default Stats;

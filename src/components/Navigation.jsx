@@ -1,47 +1,52 @@
 import React from 'react';
-import { Home, Book, Camera, BookOpen, Settings } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Home, Book, Settings } from 'lucide-react';
+import { ROUTES } from '@/routes';
 
-const Navigation = ({ activeView, onNavigate }) => {
+const Navigation = () => {
+  const location = useLocation();
+
+  const isActive = (path) => {
+    if (path === ROUTES.HOME) {
+      return location.pathname === ROUTES.HOME;
+    }
+    return location.pathname.startsWith(path);
+  };
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t">
-      <div className="max-w-xl mx-auto flex justify-between px-6 py-3">
-        <button 
-          onClick={() => onNavigate('home')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'home' ? 'text-emerald-600' : 'text-gray-400'}`}
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t z-50">
+      <div className="max-w-lg mx-auto px-4 py-2 flex justify-around">
+        <Link
+          to={ROUTES.HOME}
+          className={`flex flex-col items-center gap-1 ${
+            isActive(ROUTES.HOME) ? 'text-emerald-500' : 'text-gray-500'
+          }`}
         >
-          <Home size={20} />
+          <Home className="w-6 h-6" />
           <span className="text-xs">Home</span>
-        </button>
-        <button 
-          onClick={() => onNavigate('lessons')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'lessons' ? 'text-emerald-600' : 'text-gray-400'}`}
+        </Link>
+
+        <Link
+          to={ROUTES.LESSONS}
+          className={`flex flex-col items-center gap-1 ${
+            isActive(ROUTES.LESSONS) ? 'text-emerald-500' : 'text-gray-500'
+          }`}
         >
-          <Book size={20} />
+          <Book className="w-6 h-6" />
           <span className="text-xs">Lessons</span>
-        </button>
-        <button 
-          onClick={() => onNavigate('identify')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'identify' ? 'text-emerald-600' : 'text-gray-400'}`}
+        </Link>
+
+        <Link
+          to={ROUTES.SETTINGS}
+          className={`flex flex-col items-center gap-1 ${
+            isActive(ROUTES.SETTINGS) ? 'text-emerald-500' : 'text-gray-500'
+          }`}
         >
-          <Camera size={20} />
-          <span className="text-xs">Identify</span>
-        </button>
-        <button 
-          onClick={() => onNavigate('journal')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'journal' ? 'text-emerald-600' : 'text-gray-400'}`}
-        >
-          <BookOpen size={20} />
-          <span className="text-xs">Journal</span>
-        </button>
-        <button 
-          onClick={() => onNavigate('settings')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'settings' ? 'text-emerald-600' : 'text-gray-400'}`}
-        >
-          <Settings size={20} />
+          <Settings className="w-6 h-6" />
           <span className="text-xs">Settings</span>
-        </button>
+        </Link>
       </div>
-    </div>
+    </nav>
   );
 };
 

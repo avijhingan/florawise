@@ -1,8 +1,19 @@
-# React + Vite
+# Florawise 🌿
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Florawise is an interactive learning platform focused on botany, gardening, and plant identification. Learn about plants through engaging lessons, track your progress, and build your botanical knowledge.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. Clone the repository
+2. Install dependencies
+    ```bash 
+    npm install
+    ```
+3. Set up environment variables
+    ```bash
+    cp .env.example .env.local
+    ```
+4. Run the development server
+    ```bash
+    npm run dev
+    ```

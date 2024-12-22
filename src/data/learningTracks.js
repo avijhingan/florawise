@@ -1,22 +1,33 @@
 export const BOTANY_TRACK = {
   id: 'botany',
-  title: 'General Botany',
-  description: 'Foundation of plant science and biology',
+  title: 'Plant Basics',
+  description: 'Learn the fundamental concepts of plant structure and function',
   units: [
     {
-      id: 'botany-unit-1',
-      title: 'Plant Basics',
+      id: 'plant-parts',
+      title: 'Parts of a Plant',
       lessons: [
         {
-          id: 'botany-1-1',
-          unitId: 'botany-unit-1',
-          title: 'Parts of a Plant',
-          description: 'Learn the basic parts of a plant and their functions',
-          pairs: [
-            { left: "Roots", right: "Absorb water and nutrients" },
-            { left: "Stem", right: "Provides support and transport" },
-            { left: "Leaves", right: "Make food through photosynthesis" },
-            { left: "Flowers", right: "Reproductive structures" }
+          id: 'basic-parts',
+          title: 'Basic Plant Structure',
+          description: 'Learn the main parts of a plant',
+          type: 'multiple-choice',
+          questions: [
+            {
+              question: "Which part of the plant absorbs water and nutrients?",
+              options: ["Roots", "Leaves", "Stem", "Flowers"],
+              correct: "Roots"
+            },
+            {
+              question: "What is the main function of leaves?",
+              options: [
+                "Photosynthesis",
+                "Water absorption",
+                "Reproduction",
+                "Support"
+              ],
+              correct: "Photosynthesis"
+            }
           ]
         }
       ]

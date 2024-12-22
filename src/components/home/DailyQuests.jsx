@@ -1,40 +1,47 @@
 import React from 'react';
+import { Target } from 'lucide-react';
+import { showToast } from '@/utils/toast';
 
-const DailyQuests = () => (
-  <div className="bg-white rounded-xl p-6 shadow-sm">
-    <div className="flex justify-between items-center mb-4">
-      <div className="flex items-center gap-2">
-        <div className="bg-emerald-50 p-2 rounded-full">
-          <div className="w-4 h-4 border-2 border-emerald-500 rounded-full" />
+const DailyQuests = () => {
+  const handleQuestClick = () => {
+    showToast.unimplemented();
+  };
+
+  return (
+    <div 
+      onClick={handleQuestClick}
+      className="bg-white rounded-xl p-6 shadow-sm cursor-pointer"
+    >
+      <div className="flex items-center gap-2 mb-4">
+        <div className="bg-blue-50 p-2 rounded-full">
+          <Target className="w-4 h-4 text-blue-500" />
         </div>
         <h2 className="font-semibold">Daily Quests</h2>
       </div>
-      <button className="text-emerald-600 text-sm">View All</button>
-    </div>
-    {[
-      { title: 'Complete 2 Lessons', xp: 20, progress: 75 },
-      { title: 'Practice Identification', xp: 15, progress: 50 },
-      { title: 'Add Journal Entry', xp: 10, progress: 0 }
-    ].map((quest, index) => (
-      <div key={index} className="flex items-center gap-4 py-3">
-        <div className="bg-emerald-50 p-2 rounded-lg">
-          <div className="w-4 h-4 bg-emerald-500 rounded-sm" />
-        </div>
-        <div className="flex-1">
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-sm font-medium">{quest.title}</span>
-            <span className="text-xs text-emerald-600">{quest.xp} XP</span>
+
+      <div className="space-y-4">
+        <div>
+          <div className="flex justify-between text-sm mb-1">
+            <span className="text-gray-600">Complete 2 lessons</span>
+            <span className="font-medium">0/2</span>
           </div>
-          <div className="h-1.5 bg-gray-100 rounded-full">
-            <div 
-              className="h-full bg-emerald-500 rounded-full"
-              style={{ width: `${quest.progress}%` }}
-            />
+          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-full bg-blue-500 transition-all" style={{ width: '0%' }} />
+          </div>
+        </div>
+
+        <div>
+          <div className="flex justify-between text-sm mb-1">
+            <span className="text-gray-600">Earn 100 XP</span>
+            <span className="font-medium">0/100</span>
+          </div>
+          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-full bg-blue-500 transition-all" style={{ width: '0%' }} />
           </div>
         </div>
       </div>
-    ))}
-  </div>
-);
+    </div>
+  );
+};
 
 export default DailyQuests;

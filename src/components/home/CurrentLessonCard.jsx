@@ -1,62 +1,62 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BookOpen } from 'lucide-react';
 import { useProgress } from '@/context/ProgressContext';
-import { BOTANY_TRACK, GARDEN_TRACK, WILD_PLANTS_TRACK, TREES_TRACK } from '@/data/learningTracks';
+import { BOTANY_TRACK } from '@/data/learningTracks';
+import { generatePath } from '@/routes';
 
-const CurrentLessonCard = ({ onContinue }) => {
+const CurrentLessonCard = () => {
+  const navigate = useNavigate();
   const { progress } = useProgress();
-  const { currentLesson } = progress;
-
-  const findFullLesson = (lessonId) => {
-    const tracks = [BOTANY_TRACK, GARDEN_TRACK, WILD_PLANTS_TRACK, TREES_TRACK];
-    for (const track of tracks) {
-      for (const unit of track.units) {
-        const lesson = unit.lessons.find(l => l.id === lessonId);
-        if (lesson) {
-          return {
-            ...lesson,
-            unitId: unit.id,
-            unitNumber: unit.id,
-            lessonNumber: currentLesson.lessonNumber
-          };
-        }
-      }
-    }
-    return null;
-  };
 
   const handleContinue = () => {
-    const fullLesson = findFullLesson(currentLesson.lessonId);
-    if (fullLesson) {
-      onContinue(fullLesson);
+    if (progress.currentLesson) {
+      navigate(generatePath.lessonDetail(
+        progress.currentLesson.unitId,
+        progress.currentLesson.lessonId
+      ), {
+        state: { from: 'current-lesson' }
+      });
+    } else {
+      const firstUnit = BOTANY_TRACK.units[0];
+      const firstLesson = firstUnit.lessons[0];
+      navigate(generatePath.lessonDetail(firstUnit.id, firstLesson.id), {
+        state: { from: 'current-lesson' }
+      });
     }
+  };
+
+  const currentLesson = progress.currentLesson || {
+    title: "Basic Plant Structure",
+    progress: 0
   };
 
   return (
-    <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white shadow-sm">
-      <div className="mb-6">
-        <div className="flex items-center gap-2 text-emerald-100 mb-1.5">
-          <BookOpen size={16} />
-          <span className="text-sm font-medium tracking-wide">
-            UNIT {currentLesson.unitNumber}, LESSON {currentLesson.lessonNumber}
-          </span>
+    <div className="bg-white rounded-xl p-6 shadow-sm">
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex items-center gap-2">
+          <div className="bg-emerald-50 p-2 rounded-full">
+            <BookOpen className="w-4 h-4 text-emerald-600" />
+          </div>
+          <h2 className="font-semibold">Continue Learning</h2>
         </div>
-        <h2 className="text-2xl font-bold">{currentLesson.title}</h2>
       </div>
 
-      <div className="space-y-4">
-        <div className="h-2 bg-emerald-400/30 rounded-full overflow-hidden">
+      <h3 className="text-lg font-medium mb-3">{currentLesson.title}</h3>
+
+      <div className="space-y-2">
+        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-white rounded-full transition-all duration-500"
+            className="h-full bg-emerald-500 transition-all"
             style={{ width: `${currentLesson.progress}%` }}
           />
         </div>
-
-        <button 
+        
+        <button
           onClick={handleContinue}
-          className="w-full bg-white text-emerald-600 rounded-lg py-3 font-medium hover:bg-emerald-50 transition-colors"
+          className="w-full py-2 px-4 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
         >
-          Continue Learning
+          Continue
         </button>
       </div>
     </div>
