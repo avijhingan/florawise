@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { BOTANY_TRACK, GARDEN_TRACK, WILD_PLANTS_TRACK, TREES_TRACK } from '@/data/learningTracks';
+import { db } from '@/lib/firebase';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { useAuth } from './AuthContext';
 
 const ProgressContext = createContext();
 
@@ -47,61 +50,87 @@ const getNextLesson = (currentLessonId) => {
 };
 
 export function ProgressProvider({ children }) {
-  const [progress, setProgress] = useState(() => {
-    const savedProgress = localStorage.getItem('florawise-progress');
-    return savedProgress ? JSON.parse(savedProgress) : {
-      completedLessons: {},
-      xp: 0,
-      streak: 0,
-      plantsIdentified: 0,
-      currentLesson: {
-        unitNumber: BOTANY_TRACK.units[0].id,
-        lessonNumber: 1,
-        title: BOTANY_TRACK.units[0].lessons[0].title,
-        progress: 0,
-        lessonId: BOTANY_TRACK.units[0].lessons[0].id,
-        unitId: BOTANY_TRACK.units[0].id
-      },
-      dailyQuests: {
-        lessonsCompleted: 0,
-        identificationsCompleted: 0,
-        journalEntriesAdded: 0
-      },
-      lastActive: new Date().toISOString()
+  const [progress, setProgress] = useState(null);
+  const { user } = useAuth();
+
+  // Load user progress
+  useEffect(() => {
+    if (!user) return;
+
+    const loadProgress = async () => {
+      const docRef = doc(db, 'users', user.uid);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        setProgress(docSnap.data());
+      } else {
+        // Set default progress for new users
+        const defaultProgress = {
+          completedLessons: {},
+          xp: 0,
+          streak: 0,
+          plantsIdentified: 0,
+          currentLesson: {
+            unitNumber: BOTANY_TRACK.units[0].id,
+            lessonNumber: 1,
+            title: BOTANY_TRACK.units[0].lessons[0].title,
+            progress: 0,
+            lessonId: BOTANY_TRACK.units[0].lessons[0].id,
+            unitId: BOTANY_TRACK.units[0].id
+          },
+          dailyQuests: {
+            lessonsCompleted: 0,
+            identificationsCompleted: 0,
+            journalEntriesAdded: 0
+          },
+          lastActive: new Date().toISOString()
+        };
+        await setDoc(docRef, defaultProgress);
+        setProgress(defaultProgress);
+      }
     };
-  });
+
+    loadProgress();
+  }, [user]);
+
+  // Update progress
+  const updateProgress = async (newProgress) => {
+    if (!user) return;
+    
+    const docRef = doc(db, 'users', user.uid);
+    await setDoc(docRef, newProgress, { merge: true });
+    setProgress(newProgress);
+  };
 
   const [showXPGain, setShowXPGain] = useState(false);
   const [xpGainAmount, setXPGainAmount] = useState(0);
 
   useEffect(() => {
-    localStorage.setItem('florawise-progress', JSON.stringify(progress));
-  }, [progress]);
+    if (!user) return;
 
-  useEffect(() => {
     const lastActive = new Date(progress.lastActive);
     const today = new Date();
     const diffDays = Math.floor((today - lastActive) / (1000 * 60 * 60 * 24));
     
     if (diffDays > 1) {
-      setProgress(prev => ({ ...prev, streak: 0 }));
+      updateProgress({ ...progress, streak: 0 });
     } else if (diffDays === 1) {
-      setProgress(prev => ({ 
-        ...prev, 
-        streak: prev.streak + 1,
+      updateProgress({ 
+        ...progress, 
+        streak: progress.streak + 1,
         lastActive: today.toISOString(),
         dailyQuests: {
           lessonsCompleted: 0,
           identificationsCompleted: 0,
           journalEntriesAdded: 0
         }
-      }));
+      });
     }
-  }, []);
+  }, [user, progress]);
 
   const value = {
     progress,
-    setProgress,
+    setProgress: updateProgress,
     showXPGain,
     xpGainAmount,
     actions: {
@@ -111,31 +140,28 @@ export function ProgressProvider({ children }) {
       addXP: (amount) => {
         setXPGainAmount(amount);
         setShowXPGain(true);
-        setProgress(prev => ({
-          ...prev,
-          xp: prev.xp + amount
-        }));
+        updateProgress({
+          ...progress,
+          xp: progress.xp + amount
+        });
       },
       completeLesson: (lessonId, unitId) => {
-        setProgress(prev => {
-          const nextLesson = getNextLesson(lessonId);
-          return {
-            ...prev,
-            completedLessons: {
-              ...prev.completedLessons,
-              [lessonId]: {
-                completed: true,
-                unitId,
-                completedAt: new Date().toISOString()
-              }
-            },
-            xp: prev.xp + 20,
-            currentLesson: nextLesson || prev.currentLesson,
-            dailyQuests: {
-              ...prev.dailyQuests,
-              lessonsCompleted: prev.dailyQuests.lessonsCompleted + 1
+        updateProgress({
+          ...progress,
+          completedLessons: {
+            ...progress.completedLessons,
+            [lessonId]: {
+              completed: true,
+              unitId,
+              completedAt: new Date().toISOString()
             }
-          };
+          },
+          xp: progress.xp + 20,
+          currentLesson: getNextLesson(lessonId) || progress.currentLesson,
+          dailyQuests: {
+            ...progress.dailyQuests,
+            lessonsCompleted: progress.dailyQuests.lessonsCompleted + 1
+          }
         });
         
         // Trigger XP gain animation
@@ -144,40 +170,40 @@ export function ProgressProvider({ children }) {
       },
 
       setCurrentLesson: (lesson) => {
-        setProgress(prev => ({
-          ...prev,
+        updateProgress({
+          ...progress,
           currentLesson: {
             unitNumber: lesson.unitNumber,
             lessonNumber: lesson.lessonNumber,
             title: lesson.title,
-            progress: prev.completedLessons[lesson.id]?.completed ? 100 : 0,
+            progress: progress.completedLessons[lesson.id]?.completed ? 100 : 0,
             lessonId: lesson.id,
             unitId: lesson.unitId
           }
-        }));
+        });
       },
 
       identifyPlant: () => {
-        setProgress(prev => ({
-          ...prev,
-          plantsIdentified: prev.plantsIdentified + 1,
-          xp: prev.xp + 10,
+        updateProgress({
+          ...progress,
+          plantsIdentified: progress.plantsIdentified + 1,
+          xp: progress.xp + 10,
           dailyQuests: {
-            ...prev.dailyQuests,
-            identificationsCompleted: prev.dailyQuests.identificationsCompleted + 1
+            ...progress.dailyQuests,
+            identificationsCompleted: progress.dailyQuests.identificationsCompleted + 1
           }
-        }));
+        });
       },
 
       addJournalEntry: () => {
-        setProgress(prev => ({
-          ...prev,
-          xp: prev.xp + 5,
+        updateProgress({
+          ...progress,
+          xp: progress.xp + 5,
           dailyQuests: {
-            ...prev.dailyQuests,
-            journalEntriesAdded: prev.dailyQuests.journalEntriesAdded + 1
+            ...progress.dailyQuests,
+            journalEntriesAdded: progress.dailyQuests.journalEntriesAdded + 1
           }
-        }));
+        });
       }
     }
   };
