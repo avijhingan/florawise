@@ -60,7 +60,7 @@ const LessonDetail = () => {
   const exerciseProps = exerciseConfig.propMap(lesson);
 
   const handleBack = () => {
-    navigate(generatePath.unitLessons(trackId, unitId));
+    navigate(`/tracks/${trackId}/units/${unitId}`);
   };
 
   const handleLessonComplete = () => {
