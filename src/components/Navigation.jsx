@@ -1,52 +1,58 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Home, Book, Settings } from 'lucide-react';
-import { ROUTES } from '@/routes';
+import { Home, Book, Settings } from "lucide-react";
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
+import { ROUTES } from "@/constants/routes";
+
+// Navigation items with their routes and icons
+const NAV_ITEMS = [
+  {
+    id: "home",
+    label: "Home",
+    icon: Home,
+    route: ROUTES.HOME,
+  },
+  {
+    id: "tracks",
+    label: "Tracks",
+    icon: Book,
+    route: ROUTES.TRACKS,
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: Settings,
+    route: ROUTES.SETTINGS,
+  },
+];
+
+// Bottom navigation bar for main app sections
 const Navigation = () => {
+  const navigate = useNavigate();
   const location = useLocation();
 
-  const isActive = (path) => {
-    if (path === ROUTES.HOME) {
-      return location.pathname === ROUTES.HOME;
-    }
-    return location.pathname.startsWith(path);
-  };
-
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t z-50">
-      <div className="max-w-lg mx-auto px-4 py-2 flex justify-around">
-        <Link
-          to={ROUTES.HOME}
-          className={`flex flex-col items-center gap-1 ${
-            isActive(ROUTES.HOME) ? 'text-emerald-500' : 'text-gray-500'
-          }`}
-        >
-          <Home className="w-6 h-6" />
-          <span className="text-xs">Home</span>
-        </Link>
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+      <div className="flex justify-around items-center h-16">
+        {NAV_ITEMS.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.route;
 
-        <Link
-          to={ROUTES.LESSONS}
-          className={`flex flex-col items-center gap-1 ${
-            isActive(ROUTES.LESSONS) ? 'text-emerald-500' : 'text-gray-500'
-          }`}
-        >
-          <Book className="w-6 h-6" />
-          <span className="text-xs">Lessons</span>
-        </Link>
-
-        <Link
-          to={ROUTES.SETTINGS}
-          className={`flex flex-col items-center gap-1 ${
-            isActive(ROUTES.SETTINGS) ? 'text-emerald-500' : 'text-gray-500'
-          }`}
-        >
-          <Settings className="w-6 h-6" />
-          <span className="text-xs">Settings</span>
-        </Link>
+          return (
+            <button
+              key={item.id}
+              onClick={() => navigate(item.route)}
+              className={`flex flex-col items-center p-2 ${
+                isActive ? "text-emerald-600" : "text-gray-500"
+              }`}
+            >
+              <Icon className="h-6 w-6" />
+              <span className="text-xs mt-1">{item.label}</span>
+            </button>
+          );
+        })}
       </div>
-    </nav>
+    </div>
   );
 };
 

@@ -5,6 +5,10 @@ Florawise is an interactive learning platform focused on botany, gardening, and 
 ## Getting Started
 
 1. Clone the repository
+    ```bash
+    git clone https://github.com/your-username/florawise.git
+    cd florawise
+    ```
 2. Install dependencies
     ```bash 
     npm install
@@ -17,3 +21,12 @@ Florawise is an interactive learning platform focused on botany, gardening, and 
     ```bash
     npm run dev
     ```
+
+## Development
+
+Linting and formatting
+```bash
+npm run lint
+npm run lint:fix
+npm run format
+```
