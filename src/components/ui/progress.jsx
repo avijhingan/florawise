@@ -1,22 +1,19 @@
-import * as React from "react"
-import * as ProgressPrimitive from "@radix-ui/react-progress"
-import { cn } from "@/lib/utils"
+import React from "react";
 
-const Progress = React.forwardRef(({ className, value, ...props }, ref) => (
-  <ProgressPrimitive.Root
-    ref={ref}
-    className={cn(
-      "relative h-2 w-full overflow-hidden rounded-full bg-primary/20",
-      className
-    )}
-    {...props}
-  >
-    <ProgressPrimitive.Indicator
-      className="h-full w-full flex-1 bg-primary transition-all"
-      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-    />
-  </ProgressPrimitive.Root>
-))
-Progress.displayName = ProgressPrimitive.Root.displayName
+import { cn } from "@/lib/utils";
 
-export { Progress }
+// Progress bar component for tracking completion
+// current: current value (e.g., questionIndex)
+// total: total value (e.g., questions.length)
+const Progress = ({ current, total, className }) => {
+  return (
+    <div className={cn("mt-4 h-1 bg-gray-100 rounded-full", className)}>
+      <div
+        className="h-full bg-emerald-500 transition-all duration-300"
+        style={{ width: `${(current / total) * 100}%` }}
+      />
+    </div>
+  );
+};
+
+export { Progress };

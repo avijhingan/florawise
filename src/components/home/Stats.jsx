@@ -1,30 +1,39 @@
-import React from 'react';
+// Stats: Displays user statistics and achievements
+// Currently shows streak information, will be expanded for more stats
+import { Flame } from "lucide-react";
+import React from "react";
 
-const Stats = () => (
-  <div className="grid grid-cols-2 gap-4">
-    <div className="bg-amber-50 rounded-xl p-6">
-      <div className="flex items-center gap-3">
-        <div className="bg-amber-100 p-2 rounded-full">
-          <div className="w-5 h-5 text-amber-600">🏆</div>
+import { useProgress } from "@/context/ProgressContext";
+import { showToast } from "@/helpers/toast";
+
+const Stats = () => {
+  const { progress } = useProgress();
+
+  const handleClick = () => {
+    showToast.unimplemented();
+  };
+
+  return (
+    <div
+      className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm cursor-pointer opacity-50"
+      onClick={handleClick}
+    >
+      <div className="flex items-center gap-2 mb-4">
+        <div className="bg-orange-50 p-2 rounded-full">
+          <Flame className="w-4 h-4 text-orange-500" />
         </div>
-        <div>
-          <h3 className="text-lg font-semibold">7 Day Streak!</h3>
-          <p className="text-sm text-amber-700">Keep it growing! 🌱</p>
-        </div>
+        <h2 className="font-semibold text-gray-900">
+          {progress.streak} Day Streak
+        </h2>
+      </div>
+      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-orange-500 transition-all duration-300"
+          style={{ width: `${((progress.streak % 7) / 7) * 100}%` }}
+        />
       </div>
     </div>
-    <div className="bg-emerald-50 rounded-xl p-6">
-      <div className="flex items-center gap-3">
-        <div className="bg-emerald-100 p-2 rounded-full">
-          <div className="w-5 h-5 text-emerald-600">🌿</div>
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold">15 Plants</h3>
-          <p className="text-sm text-emerald-700">Identified! 🔍</p>
-        </div>
-      </div>
-    </div>
-  </div>
-);
+  );
+};
 
 export default Stats;

@@ -1,45 +1,56 @@
-import React from 'react';
-import { Home, Book, Camera, BookOpen, Settings } from 'lucide-react';
+import { Home, Book, Settings } from "lucide-react";
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const Navigation = ({ activeView, onNavigate }) => {
+import { ROUTES } from "@/constants/routes";
+
+// Navigation items with their routes and icons
+const NAV_ITEMS = [
+  {
+    id: "home",
+    label: "Home",
+    icon: Home,
+    route: ROUTES.HOME,
+  },
+  {
+    id: "tracks",
+    label: "Tracks",
+    icon: Book,
+    route: ROUTES.TRACKS,
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: Settings,
+    route: ROUTES.SETTINGS,
+  },
+];
+
+// Bottom navigation bar for main app sections
+const Navigation = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t">
-      <div className="max-w-xl mx-auto flex justify-between px-6 py-3">
-        <button 
-          onClick={() => onNavigate('home')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'home' ? 'text-emerald-600' : 'text-gray-400'}`}
-        >
-          <Home size={20} />
-          <span className="text-xs">Home</span>
-        </button>
-        <button 
-          onClick={() => onNavigate('lessons')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'lessons' ? 'text-emerald-600' : 'text-gray-400'}`}
-        >
-          <Book size={20} />
-          <span className="text-xs">Lessons</span>
-        </button>
-        <button 
-          onClick={() => onNavigate('identify')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'identify' ? 'text-emerald-600' : 'text-gray-400'}`}
-        >
-          <Camera size={20} />
-          <span className="text-xs">Identify</span>
-        </button>
-        <button 
-          onClick={() => onNavigate('journal')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'journal' ? 'text-emerald-600' : 'text-gray-400'}`}
-        >
-          <BookOpen size={20} />
-          <span className="text-xs">Journal</span>
-        </button>
-        <button 
-          onClick={() => onNavigate('settings')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'settings' ? 'text-emerald-600' : 'text-gray-400'}`}
-        >
-          <Settings size={20} />
-          <span className="text-xs">Settings</span>
-        </button>
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+      <div className="flex justify-around items-center h-16">
+        {NAV_ITEMS.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.route;
+
+          return (
+            <button
+              key={item.id}
+              onClick={() => navigate(item.route)}
+              className={`flex flex-col items-center p-2 ${
+                isActive ? "text-emerald-600" : "text-gray-500"
+              }`}
+            >
+              <Icon className="h-6 w-6" />
+              <span className="text-xs mt-1">{item.label}</span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

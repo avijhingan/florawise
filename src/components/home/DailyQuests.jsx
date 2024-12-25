@@ -1,40 +1,53 @@
-import React from 'react';
+import { Target } from "lucide-react";
+import React from "react";
 
-const DailyQuests = () => (
-  <div className="bg-white rounded-xl p-6 shadow-sm">
-    <div className="flex justify-between items-center mb-4">
-      <div className="flex items-center gap-2">
-        <div className="bg-emerald-50 p-2 rounded-full">
-          <div className="w-4 h-4 border-2 border-emerald-500 rounded-full" />
-        </div>
+import { showToast } from "@/helpers/toast";
+
+const DAILY_QUESTS = [
+  {
+    id: "lessons",
+    title: "Complete 3 Lessons",
+    progress: 0,
+    target: 3,
+    xp: 50,
+  },
+  {
+    id: "streak",
+    title: "Maintain Your Streak",
+    progress: 0,
+    target: 1,
+    xp: 25,
+  },
+];
+
+const DailyQuests = () => {
+  const handleQuestClick = () => {
+    showToast.unimplemented();
+  };
+
+  return (
+    <div
+      className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 opacity-50 cursor-pointer"
+      onClick={handleQuestClick}
+    >
+      <div className="flex items-center gap-2 mb-4">
+        <Target className="w-5 h-5 text-emerald-500" />
         <h2 className="font-semibold">Daily Quests</h2>
       </div>
-      <button className="text-emerald-600 text-sm">View All</button>
-    </div>
-    {[
-      { title: 'Complete 2 Lessons', xp: 20, progress: 75 },
-      { title: 'Practice Identification', xp: 15, progress: 50 },
-      { title: 'Add Journal Entry', xp: 10, progress: 0 }
-    ].map((quest, index) => (
-      <div key={index} className="flex items-center gap-4 py-3">
-        <div className="bg-emerald-50 p-2 rounded-lg">
-          <div className="w-4 h-4 bg-emerald-500 rounded-sm" />
-        </div>
-        <div className="flex-1">
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-sm font-medium">{quest.title}</span>
-            <span className="text-xs text-emerald-600">{quest.xp} XP</span>
+
+      <div className="space-y-3">
+        {DAILY_QUESTS.map((quest) => (
+          <div
+            key={quest.id}
+            className="p-3 rounded-lg border border-gray-200 flex justify-between items-center"
+          >
+            <span>{quest.title}</span>
+            <span className="text-emerald-600">+{quest.xp} XP</span>
           </div>
-          <div className="h-1.5 bg-gray-100 rounded-full">
-            <div 
-              className="h-full bg-emerald-500 rounded-full"
-              style={{ width: `${quest.progress}%` }}
-            />
-          </div>
-        </div>
+        ))}
       </div>
-    ))}
-  </div>
-);
+    </div>
+  );
+};
 
 export default DailyQuests;
