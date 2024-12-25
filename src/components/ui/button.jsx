@@ -13,17 +13,17 @@ const buttonVariants = cva(
       // variant prop: different button styles
       variant: {
         default: "bg-emerald-500 text-white hover:bg-emerald-600",
-        outline: "border-2 border-gray-200 hover:border-gray-300",
-        answer: "w-full text-left transition-all",
+        outline: "border-2 border-gray-200 hover:border-gray-300 text-gray-800",
+        answer: "w-full text-left text-gray-800 transition-all",
       },
       // state prop: different button states (selected, correct, etc.)
       state: {
-        default: "bg-white hover:bg-gray-50",
-        hover: "bg-gray-100",
-        selected: "bg-blue-50 hover:bg-blue-100",
-        completed: "bg-emerald-50 hover:bg-emerald-100",
-        correct: "bg-green-100",
-        incorrect: "bg-red-100",
+        default: "bg-white hover:bg-gray-50 text-gray-800",
+        hover: "bg-gray-100 text-gray-800",
+        selected: "bg-blue-50 hover:bg-blue-100 text-gray-800",
+        completed: "bg-emerald-50 hover:bg-emerald-100 text-gray-800",
+        correct: "bg-green-100 text-gray-800",
+        incorrect: "bg-red-100 text-gray-800",
         disabled: "opacity-50 cursor-not-allowed",
       },
       // size prop: different button sizes
