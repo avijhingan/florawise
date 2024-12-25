@@ -64,19 +64,13 @@ class MultipleChoiceExercise extends BaseExercise {
             isAnswered: false,
           }));
         } else {
-          setTimeout(() => {
-            this.handleComplete();
-          }, 300);
+          this.handleComplete();
         }
       }, EXERCISE_TIMING.FEEDBACK_DELAY);
     } else {
       showToast.incorrect();
-      // Keep correct answers, remove incorrect ones
-      const correctAnswers = this.state.selectedAnswers.filter((answer) =>
-        this.props.questions[this.state.questionIndex].correct.includes(answer),
-      );
       setTimeout(() => {
-        this.setState({ selectedAnswers: correctAnswers });
+        this.setState({ selectedAnswers: [] });
       }, EXERCISE_TIMING.FEEDBACK_DELAY);
     }
   };
@@ -96,25 +90,18 @@ class MultipleChoiceExercise extends BaseExercise {
             <Button
               key={index}
               onClick={() => this.handleAnswerToggle(option)}
-              disabled={isAnswered}
+              disabled={isAnswered && selectedAnswers.length > 0}
               variant="answer"
               size="answer"
               state={
-                isAnswered && selectedAnswers.includes(option)
-                  ? this.checkAnswers()
-                    ? "correct"
-                    : "incorrect"
-                  : selectedAnswers.includes(option)
-                    ? "selected"
-                    : "default"
+                selectedAnswers.includes(option) ? "selected" : "default"
               }
             >
-              <div className="line-clamp-3 text-sm sm:text-base">{option}</div>
+              {option}
             </Button>
           ))}
         </div>
 
-        {/* Only show this button if there are selected answers and not yet answered */}
         {selectedAnswers.length > 0 && !isAnswered && (
           <Button onClick={this.handleSubmit} className="w-full">
             Submit
@@ -122,7 +109,7 @@ class MultipleChoiceExercise extends BaseExercise {
         )}
 
         <Progress
-          current={questionIndex + (isAnswered ? 1 : 0)}
+          current={questionIndex}
           total={questions.length}
         />
       </div>
