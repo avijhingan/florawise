@@ -2,6 +2,8 @@ import { ArrowRight, Trophy } from "lucide-react";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { STYLE_GUIDE } from "@/styles";
 
 class BaseExercise extends React.Component {
   constructor(props) {
@@ -79,6 +81,14 @@ class BaseExercise extends React.Component {
     }
 
     return this.renderExercise();
+  }
+
+  getButtonStyles(state) {
+    return cn(
+      STYLE_GUIDE.buttons.base,
+      state === "correct" && STYLE_GUIDE.buttons.variants.default,
+      state === "incorrect" && STYLE_GUIDE.buttons.variants.destructive,
+    );
   }
 }
 

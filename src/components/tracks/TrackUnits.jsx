@@ -52,7 +52,7 @@ const TrackUnits = () => {
           >
             <div className="aspect-[3/1] mb-3 relative rounded-lg overflow-hidden bg-gray-100">
               <img
-                src={`/images/units/${unit.id}.jpg`}
+                src={unit.image}
                 alt=""
                 className="object-cover w-full h-full"
               />

@@ -1,10 +1,10 @@
 // Context for managing user progress throughout the application
-// Handles lesson completion, XP, streaks, and current lesson tracking
 import React, { createContext, useContext, useState } from "react";
+
+import { StorageService } from "@/services/storage";
 
 const ProgressContext = createContext();
 
-// Custom hook to ensure context is used within provider
 export const useProgress = () => {
   const context = useContext(ProgressContext);
   if (!context) {
@@ -14,33 +14,46 @@ export const useProgress = () => {
 };
 
 export const ProgressProvider = ({ children }) => {
-  const [progress, setProgress] = useState({
-    completedLessons: {},
-    xp: 0,
-    streak: 0,
-    currentLesson: null,
-    lastActive: new Date().toISOString(),
+  const [progress, setProgress] = useState(() => {
+    // Load initial state from storage or use defaults
+    return (
+      StorageService.getProgress() || {
+        completedLessons: {},
+        xp: 0,
+        streak: 0,
+        currentLesson: null,
+        lastActive: new Date().toISOString(),
+      }
+    );
   });
 
   const addXP = (amount) => {
-    setProgress((prev) => ({
-      ...prev,
-      xp: prev.xp + amount,
-    }));
+    setProgress((prev) => {
+      const newProgress = {
+        ...prev,
+        xp: prev.xp + amount,
+      };
+      StorageService.setProgress(newProgress);
+      return newProgress;
+    });
   };
 
-  const completeLesson = (lessonId, unitId) => {
-    setProgress((prev) => ({
-      ...prev,
-      completedLessons: {
-        ...prev.completedLessons,
-        [lessonId]: {
-          completed: true,
-          unitId,
-          completedAt: new Date().toISOString(),
+  const completeLesson = (lessonId) => {
+    setProgress((prev) => {
+      const newProgress = {
+        ...prev,
+        completedLessons: {
+          ...prev.completedLessons,
+          [lessonId]: {
+            completed: true,
+            completedAt: new Date().toISOString(),
+          },
         },
-      },
-    }));
+        xp: prev.xp + 50, // Award XP for completion
+      };
+      StorageService.setProgress(newProgress);
+      return newProgress;
+    });
   };
 
   const value = {

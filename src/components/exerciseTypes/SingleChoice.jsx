@@ -63,6 +63,16 @@ class SingleChoiceExercise extends BaseExercise {
       <div className="bg-white rounded-lg p-6 shadow-sm">
         <h2 className="text-xl mb-6">{currentQuestion.question}</h2>
 
+        {currentQuestion.image && (
+          <div className="aspect-video relative rounded-lg overflow-hidden bg-gray-100 mb-6">
+            <img
+              src={currentQuestion.image}
+              alt="Plant"
+              className="object-cover w-full h-full"
+            />
+          </div>
+        )}
+
         <div className="space-y-3 mb-6">
           {currentQuestion.options.map((option, index) => (
             <Button

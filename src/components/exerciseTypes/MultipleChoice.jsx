@@ -93,9 +93,7 @@ class MultipleChoiceExercise extends BaseExercise {
               disabled={isAnswered && selectedAnswers.length > 0}
               variant="answer"
               size="answer"
-              state={
-                selectedAnswers.includes(option) ? "selected" : "default"
-              }
+              state={selectedAnswers.includes(option) ? "selected" : "default"}
             >
               {option}
             </Button>
@@ -108,10 +106,7 @@ class MultipleChoiceExercise extends BaseExercise {
           </Button>
         )}
 
-        <Progress
-          current={questionIndex}
-          total={questions.length}
-        />
+        <Progress current={questionIndex} total={questions.length} />
       </div>
     );
   }

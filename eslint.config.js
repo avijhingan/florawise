@@ -2,7 +2,6 @@ import path from "path";
 
 import js from "@eslint/js";
 import importPlugin from "eslint-plugin-import";
-import jsxA11yPlugin from "eslint-plugin-jsx-a11y";
 import prettierPlugin from "eslint-plugin-prettier";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
@@ -41,7 +40,6 @@ export default [
     plugins: {
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
-      "jsx-a11y": jsxA11yPlugin,
       import: importPlugin,
       prettier: prettierPlugin,
     },
@@ -49,7 +47,6 @@ export default [
       ...js.configs.recommended.rules,
       ...reactPlugin.configs.recommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
-      ...jsxA11yPlugin.configs.recommended.rules,
       ...importPlugin.configs.recommended.rules,
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
